@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HuanXin UI Demo</string>
+    <string name="attach_read_fire">Burn After Reading</string>
+    <string name="revoking">Revoking</string>
+    <string name="revoke">Revoke</string>
+    <string name="revoke_error_maxtime">Message has been more than two minutes can not be revoke</string>
+    <string name="revoke_error">Revoke failed with error code </string>
+    <string name="stop_record">Stop record</string>
+    <string name="record_finish_toast">recording finish, file saved in %s</string>
+    <string name="em_user_remove">This user has been removed</string>
+    <string name="refuse">refuse</string>
+    <string name="call_version_inconsistent">Both call version are inconsistent</string>
+    <string name="messages_are_empty">Messages has been cleared</string>
+    <string name="user_already_in_contactlist">This user already is your friend, only need remove out from the black list</string>
+    <string name="group_nick">Group Nick:</string>
+    <string name="group_owner">Group Owner:</string>
+    <string name="chatroom_not_support_forward">Chatroom does not support forward message</string>
+    <string name="network_unstable">Network unstable</string>
+    <string name="no_call_data">No call data</string>
+    <string name="adaptive_video_encode">Adaptive video encode</string>
+</resources>

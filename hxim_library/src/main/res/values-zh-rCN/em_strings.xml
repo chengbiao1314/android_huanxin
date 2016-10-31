@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">环信DEMO</string>
+    <string name="attach_read_fire">阅后即焚</string>
+    <string name="revoke">撤回</string>
+    <string name="revokeing">正在撤回 请稍候……</string>
+    <string name="revoke_error_maxtime">消息已经超过两分钟 无法撤回</string>
+    <string name="revoke_error">撤回失败 失败错误码 </string>
+    <string name="stop_record">停止录制</string>
+    <string name="record_finish_toast">录制完毕，文件存储在%s</string>
+    <string name="em_user_remove">此用户已被移除</string>
+
+    <string name="refuse">拒绝</string>
+    <string name="call_version_inconsistent">通话协议版本不一致</string>
+    <string name="messages_are_empty">聊天记录已被清空</string>
+
+    <string name="user_already_in_contactlist">此用户已是你好友(被拉黑状态)，从黑名单列表中移出即可</string>
+    <string name="group_nick">聊天室名称:</string>
+    <string name="group_owner">群主：</string>
+    <string name="chatroom_not_support_forward">聊天室不支持转发</string>
+
+    <string name="network_unstable">网络不稳定</string>
+    <string name="no_call_data">没有通话数据</string>
+    <string name="adaptive_video_encode">视频自适应码率编码</string>
+</resources>
