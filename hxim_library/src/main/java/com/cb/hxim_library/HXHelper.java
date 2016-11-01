@@ -64,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class DemoHelper {
+public class HXHelper {
     /**
      * 数据同步listener
      */
@@ -76,7 +76,7 @@ public class DemoHelper {
         public void onSyncComplete(boolean success);
     }
 
-    protected static final String TAG = "DemoHelper";
+    protected static final String TAG = "HXHelper";
     
 	private EaseUI easeUI;
 	
@@ -91,9 +91,9 @@ public class DemoHelper {
 
 	private UserProfileManager userProManager;
 
-	private static DemoHelper instance = null;
+	private static HXHelper instance = null;
 	
-	private DemoModel demoModel = null;
+	private HXModel hxModel = null;
 	
 	/**
      * HuanXin sync groups status listener
@@ -135,12 +135,12 @@ public class DemoHelper {
 
     private boolean isGroupAndContactListenerRegisted;
 
-	private DemoHelper() {
+	private HXHelper() {
 	}
 
-	public synchronized static DemoHelper getInstance() {
+	public synchronized static HXHelper getInstance() {
 		if (instance == null) {
-			instance = new DemoHelper();
+			instance = new HXHelper();
 		}
 		return instance;
 	}
@@ -168,7 +168,7 @@ public class DemoHelper {
 		    easeUI = EaseUI.getInstance();
 		    //调用easeui的api设置providers
 		    setEaseUIProviders();
-		    demoModel = new DemoModel(context);
+		    hxModel = new HXModel(context);
 		    //设置chat options
 		    setChatoptions();
 			//初始化PreferenceManager
@@ -205,25 +205,25 @@ public class DemoHelper {
             
             @Override
             public boolean isSpeakerOpened() {
-                return demoModel.getSettingMsgSpeaker();
+                return hxModel.getSettingMsgSpeaker();
             }
             
             @Override
             public boolean isMsgVibrateAllowed(EMMessage message) {
-                return demoModel.getSettingMsgVibrate();
+                return hxModel.getSettingMsgVibrate();
             }
             
             @Override
             public boolean isMsgSoundAllowed(EMMessage message) {
-                return demoModel.getSettingMsgSound();
+                return hxModel.getSettingMsgSound();
             }
             
             @Override
             public boolean isMsgNotifyAllowed(EMMessage message) {
                 if(message == null){
-                    return demoModel.getSettingMsgNotification();
+                    return hxModel.getSettingMsgNotification();
                 }
-                if(!demoModel.getSettingMsgNotification()){
+                if(!hxModel.getSettingMsgNotification()){
                     return false;
                 }else{
                     //如果允许新消息提示
@@ -233,10 +233,10 @@ public class DemoHelper {
                     // 获取设置的不提示新消息的用户或者群组ids
                     if (message.getChatType() == ChatType.Chat) {
                         chatUsename = message.getFrom();
-                        notNotifyIds = demoModel.getDisabledIds();
+                        notNotifyIds = hxModel.getDisabledIds();
                     } else {
                         chatUsename = message.getTo();
-                        notNotifyIds = demoModel.getDisabledGroups();
+                        notNotifyIds = hxModel.getDisabledGroups();
                     }
 
                     if (notNotifyIds == null || !notNotifyIds.contains(chatUsename)) {
@@ -342,9 +342,9 @@ public class DemoHelper {
         syncContactsListeners = new ArrayList<DataSyncListener>();
         syncBlackListListeners = new ArrayList<DataSyncListener>();
         
-        isGroupsSyncedWithServer = demoModel.isGroupsSynced();
-        isContactsSyncedWithServer = demoModel.isContactSynced();
-        isBlackListSyncedWithServer = demoModel.isBacklistSynced();
+        isGroupsSyncedWithServer = hxModel.isGroupsSynced();
+        isContactsSyncedWithServer = hxModel.isContactSynced();
+        isBlackListSyncedWithServer = hxModel.isBacklistSynced();
         
         // create the global connection listener
         connectionListener = new EMConnectionListener() {
@@ -365,7 +365,7 @@ public class DemoHelper {
                     new Thread(){
                         @Override
                         public void run(){
-                            DemoHelper.getInstance().notifyForRecevingEvents();
+                            HXHelper.getInstance().notifyForRecevingEvents();
                         }
                     }.start();
                 }else{
@@ -541,7 +541,7 @@ public class DemoHelper {
         @Override
         public void onContactDeleted(final List<String> usernameList) {
             // 被删除
-            Map<String, EaseUser> localUsers = DemoHelper.getInstance().getContactList();
+            Map<String, EaseUser> localUsers = HXHelper.getInstance().getContactList();
             for (String username : usernameList) {
                 localUsers.remove(username);
                 userDao.deleteContact(username);
@@ -809,8 +809,8 @@ public class DemoHelper {
 	    return easeUI.getNotifier();
 	}
 	
-	public DemoModel getModel(){
-        return (DemoModel) demoModel;
+	public HXModel getModel(){
+        return (HXModel) hxModel;
     }
 	
 	/**
@@ -827,7 +827,7 @@ public class DemoHelper {
      */
     public void saveContact(EaseUser user){
     	contactList.put(user.getUsername(), user);
-    	demoModel.saveContact(user);
+    	hxModel.saveContact(user);
     }
     
     /**
@@ -837,7 +837,7 @@ public class DemoHelper {
      */
     public Map<String, EaseUser> getContactList() {
         if (isLoggedIn() && contactList == null) {
-            contactList = demoModel.getContactList();
+            contactList = hxModel.getContactList();
         }
         
         return contactList;
@@ -849,7 +849,7 @@ public class DemoHelper {
      */
     public void setCurrentUserName(String username){
     	this.username = username;
-    	demoModel.setCurrentUserName(username);
+    	hxModel.setCurrentUserName(username);
     }
     
     /**
@@ -857,7 +857,7 @@ public class DemoHelper {
      */
     public String getCurrentUsernName(){
     	if(username == null){
-    		username = demoModel.getCurrentUsernName();
+    		username = hxModel.getCurrentUsernName();
     	}
     	return username;
     }
@@ -867,7 +867,7 @@ public class DemoHelper {
 	}
 	public Map<String, RobotUser> getRobotList() {
 		if (isLoggedIn() && robotList == null) {
-			robotList = demoModel.getRobotList();
+			robotList = hxModel.getRobotList();
 		}
 		return robotList;
 	}
@@ -883,7 +883,7 @@ public class DemoHelper {
          }
          ArrayList<EaseUser> mList = new ArrayList<EaseUser>();
          mList.addAll(contactList.values());
-         demoModel.saveContactList(mList);
+         hxModel.saveContactList(mList);
     }
 
 	public UserProfileManager getUserProfileManager() {
@@ -979,7 +979,7 @@ public class DemoHelper {
                        return;
                    }
                    
-                   demoModel.setGroupsSynced(true);
+                   hxModel.setGroupsSynced(true);
                    
                    isGroupsSyncedWithServer = true;
                    isSyncingGroupsWithServer = false;
@@ -993,7 +993,7 @@ public class DemoHelper {
                        callback.onSuccess();
                    }
                } catch (EaseMobException e) {
-                   demoModel.setGroupsSynced(false);
+                   hxModel.setGroupsSynced(false);
                    isGroupsSyncedWithServer = false;
                    isSyncingGroupsWithServer = false;
                    noitifyGroupSyncListeners(false);
@@ -1044,7 +1044,7 @@ public class DemoHelper {
                    List<EaseUser> users = new ArrayList<EaseUser>(userlist.values());
                    dao.saveContactList(users);
 
-                   demoModel.setContactSynced(true);
+                   hxModel.setContactSynced(true);
                    EMLog.d(TAG, "set contact syn status to true");
                    
                    isContactsSyncedWithServer = true;
@@ -1073,7 +1073,7 @@ public class DemoHelper {
                        callback.onSuccess(usernames);
                    }
                } catch (EaseMobException e) {
-                   demoModel.setContactSynced(false);
+                   hxModel.setContactSynced(false);
                    isContactsSyncedWithServer = false;
                    isSyncingContactsWithServer = false;
                    noitifyGroupSyncListeners(false);
@@ -1112,7 +1112,7 @@ public class DemoHelper {
                        return;
                    }
                    
-                   demoModel.setBlacklistSynced(true);
+                   hxModel.setBlacklistSynced(true);
                    
                    isBlackListSyncedWithServer = true;
                    isSyncingBlackListWithServer = false;
@@ -1123,7 +1123,7 @@ public class DemoHelper {
                        callback.onSuccess(usernames);
                    }
                } catch (EaseMobException e) {
-                   demoModel.setBlacklistSynced(false);
+                   hxModel.setBlacklistSynced(false);
                    
                    isBlackListSyncedWithServer = false;
                    isSyncingBlackListWithServer = true;
@@ -1183,9 +1183,9 @@ public class DemoHelper {
         isSyncingContactsWithServer = false;
         isSyncingBlackListWithServer = false;
         
-        demoModel.setGroupsSynced(false);
-        demoModel.setContactSynced(false);
-        demoModel.setBlacklistSynced(false);
+        hxModel.setGroupsSynced(false);
+        hxModel.setContactSynced(false);
+        hxModel.setBlacklistSynced(false);
         
         isGroupsSyncedWithServer = false;
         isContactsSyncedWithServer = false;

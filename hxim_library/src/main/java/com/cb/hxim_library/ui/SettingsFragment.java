@@ -32,8 +32,8 @@ import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatOptions;
 import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.DemoHelper;
-import com.cb.hxim_library.DemoModel;
+import com.cb.hxim_library.HXHelper;
+import com.cb.hxim_library.HXModel;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.widget.EaseSwitchButton;
 
@@ -93,7 +93,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
     private EaseSwitchButton vibrateSwitch;
     private EaseSwitchButton speakerSwitch;
     private EaseSwitchButton ownerLeaveSwitch;
-    private DemoModel settingsModel;
+    private HXModel settingsModel;
     private EMChatOptions chatOptions;
 	private RelativeLayout rl_switch_adaptive_video_encode;
 	private EaseSwitchButton adaptiveVideoSwitch;
@@ -135,7 +135,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		llDiagnose=(LinearLayout) getView().findViewById(R.id.ll_diagnose);
 		pushNick=(LinearLayout) getView().findViewById(R.id.ll_set_push_nick);
 		
-		settingsModel = DemoHelper.getInstance().getModel();
+		settingsModel = HXHelper.getInstance().getModel();
 		chatOptions = EMChatManager.getInstance().getChatOptions();
 		
 		blacklistContainer.setOnClickListener(this);
@@ -372,7 +372,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		pd.setMessage(st);
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
-		DemoHelper.getInstance().logout(true,new EMCallBack() {
+		HXHelper.getInstance().logout(true,new EMCallBack() {
 			
 			@Override
 			public void onSuccess() {

@@ -21,7 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.adapter.EaseContactAdapter;
 import com.cb.hxim_library.easeui.domain.EaseUser;
@@ -79,7 +79,7 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 
 	private void getContactList() {
 		contactList.clear();
-		Map<String, EaseUser> users = DemoHelper.getInstance().getContactList();
+		Map<String, EaseUser> users = HXHelper.getInstance().getContactList();
 		Iterator<Entry<String, EaseUser>> iterator = users.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, EaseUser> entry = iterator.next();

@@ -31,10 +31,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.cb.hxim_library.HXHelper;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContact;
-import com.cb.hxim_library.DemoHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.db.UserDao;
 import com.cb.hxim_library.domain.RobotUser;
@@ -73,7 +73,7 @@ public class RobotsActivity extends BaseActivity {
 				getRobotNamesFromServer();
 			}
 		});
-		Map<String, RobotUser> robotMap = DemoHelper.getInstance().getRobotList();
+		Map<String, RobotUser> robotMap = HXHelper.getInstance().getRobotList();
 		if (robotMap != null) {
 			robotList.addAll(robotMap.values());
 		} else {
@@ -128,7 +128,7 @@ public class RobotsActivity extends BaseActivity {
 						robotList.clear();
 						robotList.addAll(mMap.values());
 						// 存入内存
-						DemoHelper.getInstance().setRobotList(mMap);
+						HXHelper.getInstance().setRobotList(mMap);
 						// 存入db
 						UserDao dao = new UserDao(RobotsActivity.this);
 						dao.saveRobotUser(robotList);

@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
 import com.easemob.exceptions.EaseMobException;
 
@@ -85,7 +85,7 @@ public class RegisterActivity extends BaseActivity {
 								if (!RegisterActivity.this.isFinishing())
 									pd.dismiss();
 								// 保存用户名
-								DemoHelper.getInstance().setCurrentUserName(username);
+								HXHelper.getInstance().setCurrentUserName(username);
 								Toast.makeText(getApplicationContext(), getResources().getString(R.string.Registered_successfully), 0).show();
 								finish();
 							}

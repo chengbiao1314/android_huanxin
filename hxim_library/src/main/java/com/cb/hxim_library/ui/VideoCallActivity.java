@@ -35,11 +35,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cb.hxim_library.HXHelper;
 import com.easemob.chat.EMCallStateChangeListener;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMVideoCallHelper;
-import com.cb.hxim_library.DemoHelper;
-import com.cb.hxim_library.DemoModel;
+import com.cb.hxim_library.HXModel;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.utils.CameraHelper;
 import com.easemob.exceptions.EMServiceNotReadyException;
@@ -101,7 +101,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         }
         setContentView(R.layout.em_activity_video_call);
         
-        DemoHelper.getInstance().isVideoCalling = true;
+        HXHelper.getInstance().isVideoCalling = true;
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -139,7 +139,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
         isInComingCall = getIntent().getBooleanExtra("isComingCall", false);
         username = getIntent().getStringExtra("username");
         
-        DemoModel dm = DemoHelper.getInstance().getModel();
+        HXModel dm = HXHelper.getInstance().getModel();
         if(dm.isAdaptiveVideoEncode()){
 //        	EMChatManager.getInstance().setAdaptiveVideoFlag(true);
         }else{
@@ -658,7 +658,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        DemoHelper.getInstance().isVideoCalling = false;
+        HXHelper.getInstance().isVideoCalling = false;
         stopMonitor();
         try {
 			callHelper.setSurfaceView(null);

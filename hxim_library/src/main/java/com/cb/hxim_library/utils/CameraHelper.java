@@ -23,8 +23,8 @@ import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.cb.hxim_library.HXOperation;
 import com.easemob.chat.EMVideoCallHelper;
-import com.cb.hxim_library.DemoApplication;
 
 public class CameraHelper implements PreviewCallback {
     private static final String TAG = "CameraHelper";
@@ -321,6 +321,6 @@ public class CameraHelper implements PreviewCallback {
     }
 
     boolean isScreenOriatationPortrait() {
-        return DemoApplication.applicationContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        return HXOperation.applicationContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 }

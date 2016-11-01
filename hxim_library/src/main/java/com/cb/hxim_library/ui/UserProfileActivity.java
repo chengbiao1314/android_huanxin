@@ -21,9 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cb.hxim_library.HXHelper;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChatManager;
-import com.cb.hxim_library.DemoHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.domain.EaseUser;
 import com.cb.hxim_library.easeui.utils.EaseUserUtils;
@@ -136,12 +136,12 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	}
 
 	public void asyncFetchUserInfo(String username){
-		DemoHelper.getInstance().getUserProfileManager().asyncGetUserInfo(username, new EMValueCallBack<EaseUser>() {
+		HXHelper.getInstance().getUserProfileManager().asyncGetUserInfo(username, new EMValueCallBack<EaseUser>() {
 
 			@Override
 			public void onSuccess(EaseUser user) {
 				if (user != null) {
-				    DemoHelper.getInstance().saveContact(user);
+				    HXHelper.getInstance().saveContact(user);
 				    if(isFinishing()){
 				        return;
 				    }
@@ -196,7 +196,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void run() {
-				boolean updatenick = DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(nickName);
+				boolean updatenick = HXHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(nickName);
 				if (UserProfileActivity.this.isFinishing()) {
 					return;
 				}
@@ -278,7 +278,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void run() {
-				final String avatarUrl = DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(data);
+				final String avatarUrl = HXHelper.getInstance().getUserProfileManager().uploadUserAvatar(data);
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {

@@ -25,10 +25,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cb.hxim_library.HXHelper;
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
-import com.cb.hxim_library.DemoHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
 
@@ -53,7 +53,7 @@ public class LoginActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		// 如果登录成功过，直接进入主页面
-		if (DemoHelper.getInstance().isLoggedIn()) {
+		if (HXHelper.getInstance().isLoggedIn()) {
 			autoLogin = true;
 			startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
@@ -81,8 +81,8 @@ public class LoginActivity extends BaseActivity {
 
 			}
 		});
-		if (DemoHelper.getInstance().getCurrentUsernName() != null) {
-			usernameEditText.setText(DemoHelper.getInstance().getCurrentUsernName());
+		if (HXHelper.getInstance().getCurrentUsernName() != null) {
+			usernameEditText.setText(HXHelper.getInstance().getCurrentUsernName());
 		}
 	}
 
@@ -131,9 +131,9 @@ public class LoginActivity extends BaseActivity {
 					return;
 				}
 				// 登陆成功，保存用户名
-				DemoHelper.getInstance().setCurrentUserName(currentUsername);
+				HXHelper.getInstance().setCurrentUserName(currentUsername);
 				// 注册群组和联系人监听
-				DemoHelper.getInstance().registerGroupAndContactListener();
+				HXHelper.getInstance().registerGroupAndContactListener();
 
 				// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
 				// ** manually load all local groups and
@@ -141,7 +141,7 @@ public class LoginActivity extends BaseActivity {
 				EMChatManager.getInstance().loadAllConversations();
 				
 				//异步获取当前用户的昵称和头像(从自己服务器获取，demo使用的一个第三方服务)
-				DemoHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
+				HXHelper.getInstance().getUserProfileManager().asyncGetCurrentUserInfo();
 				
 				if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
 					pd.dismiss();

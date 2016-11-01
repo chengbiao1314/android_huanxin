@@ -17,7 +17,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 
 public class DbOpenHelper extends SQLiteOpenHelper {
 
@@ -65,7 +65,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 	}
 	
 	private static String getUserDatabaseName() {
-        return  DemoHelper.getInstance().getCurrentUsernName() + "_demo.db";
+        return  HXHelper.getInstance().getCurrentUsernName() + "_demo.db";
     }
 	
 	@Override

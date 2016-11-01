@@ -23,7 +23,7 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.domain.EmojiconExampleGroupData;
 import com.cb.hxim_library.domain.RobotUser;
@@ -74,7 +74,7 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
     protected void setUpView() {
         setChatFragmentHelper(this);
         if (chatType == Constant.CHATTYPE_SINGLE) { 
-            Map<String,RobotUser> robotMap = DemoHelper.getInstance().getRobotList();
+            Map<String,RobotUser> robotMap = HXHelper.getInstance().getRobotList();
             if(robotMap!=null && robotMap.containsKey(toChatUsername)){
                 isRobot = true;
             }

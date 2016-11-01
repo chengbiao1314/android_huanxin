@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cb.hxim_library.ui;
+package com.cb.hxim_library.ui.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,55 +19,37 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import com.cb.hxim_library.Constant;
 import com.cb.hxim_library.HXHelper;
+import com.cb.hxim_library.R;
+import com.cb.hxim_library.easeui.EaseConstant;
+import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
+import com.cb.hxim_library.ui.BaseActivity;
+import com.cb.hxim_library.ui.ConversationListFragment;
+import com.cb.hxim_library.ui.GroupsActivity;
+import com.cb.hxim_library.ui.LoginActivity;
 import com.easemob.EMCallBack;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.CmdMessageBody;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMConversation.EMConversationType;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.EMMessage.Type;
-import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.R;
-import com.cb.hxim_library.db.InviteMessgeDao;
-import com.cb.hxim_library.db.UserDao;
-import com.cb.hxim_library.domain.InviteMessage;
-import com.cb.hxim_library.easeui.EaseConstant;
-import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
 import com.easemob.util.EMLog;
 import com.easemob.util.NetUtils;
-//import com.xiaomi.mipush.sdk.MiPushClient;
 
-public class MainActivity extends BaseActivity implements EMEventListener {
+public class ConversationListActivity extends BaseActivity implements EMEventListener {
 
-	protected static final String TAG = "MainActivity";
-	// 未读消息textview
-	private TextView unreadLabel;
-	// 未读通讯录textview
-	private TextView unreadAddressLable;
+	protected static final String TAG = "ConversationListActivity";
 
-	private Button[] mTabs;
-	private ContactListFragment contactListFragment;
-	// private conversationListFragment conversationListFragment;
-//	private ChatAllHistoryFragment conversationListFragment;
-	private SettingsFragment settingFragment;
-	private Fragment[] fragments;
-	private int index;
-	// 当前fragment的index
-	private int currentTabIndex;
 	// 账号在别处登录
 	public boolean isConflict = false;
 	// 账号被移除
@@ -84,8 +66,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		MiPushClient.clearNotification(this);
-		
+
 		if (savedInstanceState != null && savedInstanceState.getBoolean(Constant.ACCOUNT_REMOVED, false)) {
 			// 防止被移除后，没点确定按钮然后按了home键，长期在后台又进app导致的crash
 			// 三个fragment里加的判断同理
@@ -100,13 +81,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			startActivity(new Intent(this, LoginActivity.class));
 			return;
 		}
-		setContentView(R.layout.em_activity_main);
-		initView();
-
-		//umeng api
-//		MobclickAgent.updateOnlineConfig(this);
-//		UmengUpdateAgent.setUpdateOnlyWifi(false);
-//		UmengUpdateAgent.update(this);
+		setContentView(R.layout.cb_activity_conversationlist);
 
 		if (getIntent().getBooleanExtra(Constant.ACCOUNT_CONFLICT, false) && !isConflictDialogShow) {
 			showConflictDialog();
@@ -114,16 +89,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			showAccountRemovedDialog();
 		}
 
-		inviteMessgeDao = new InviteMessgeDao(this);
-		userDao = new UserDao(this);
 		conversationListFragment = new ConversationListFragment();
-		contactListFragment = new ContactListFragment();
-		settingFragment = new SettingsFragment();
-		fragments = new Fragment[] { conversationListFragment, contactListFragment, settingFragment };
 		// 添加显示第一个fragment
-		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, conversationListFragment)
-				.add(R.id.fragment_container, contactListFragment).hide(contactListFragment).show(conversationListFragment)
-				.commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, conversationListFragment).show(conversationListFragment).commit();
 		
 		// 注册群组和联系人监听
         HXHelper.getInstance().registerGroupAndContactListener();
@@ -132,60 +100,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		
 		//内部测试方法，请忽略
         registerInternalDebugReceiver();
-	}
-
-	
-	/**
-	 * 初始化组件
-	 */
-	private void initView() {
-		unreadLabel = (TextView) findViewById(R.id.unread_msg_number);
-		unreadAddressLable = (TextView) findViewById(R.id.unread_address_number);
-		mTabs = new Button[3];
-		mTabs[0] = (Button) findViewById(R.id.btn_conversation);
-		mTabs[1] = (Button) findViewById(R.id.btn_address_list);
-		mTabs[2] = (Button) findViewById(R.id.btn_setting);
-		// 把第一个tab设为选中状态
-		mTabs[0].setSelected(true);
-	}
-
-	/**
-	 * button点击事件
-	 * 
-	 * @param view
-	 */
-	public void onTabClicked(View view) {
-		if(view.getId() == R.id.btn_conversation){
-			index = 0;
-		}else if(view.getId() == R.id.btn_address_list){
-			index = 1;
-		}else if(view.getId() == R.id.btn_setting){
-			index = 2;
-		}
-
-//		switch (view.getId()) {
-//		case R.id.btn_conversation:
-//			index = 0;
-//			break;
-//		case R.id.btn_address_list:
-//			index = 1;
-//			break;
-//		case R.id.btn_setting:
-//			index = 2;
-//			break;
-//		}
-		if (currentTabIndex != index) {
-			FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
-			trx.hide(fragments[currentTabIndex]);
-			if (!fragments[index].isAdded()) {
-				trx.add(R.id.fragment_container, fragments[index]);
-			}
-			trx.show(fragments[index]).commit();
-		}
-		mTabs[currentTabIndex].setSelected(false);
-		// 把当前tab设为选中状态
-		mTabs[index].setSelected(true);
-		currentTabIndex = index;
 	}
 
 	/**
@@ -199,15 +113,12 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			// 提示新消息
 			HXHelper.getInstance().getNotifier().onNewMsg(message);
 
-			refreshUIWithMessage();
 			break;
 		case EventOfflineMessage: {
-		    refreshUIWithMessage();
 			break;
 		}
 
 		case EventConversationListChanged: {
-		    refreshUIWithMessage();
 		    break;
 		}
 		case EventNewCMDMessage:
@@ -218,7 +129,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
             if(action.equals(EaseConstant.EASE_ATTR_REVOKE)){
                 EaseCommonUtils.receiveRevokeMessage(this, cmdMessage);
             }
-			refreshUIWithMessage();
 			break;
 		case EventReadAck:
             // TODO 这里当此消息未加载到内存中时，ackMessage会为null，消息的删除会失败
@@ -239,28 +149,12 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                 }
                 conversation.removeMessage(ackMessage.getMsgId());
             }
-            refreshUIWithMessage();
 		    break;
 		default:
 			break;
 		}
 	}
 
-	private void refreshUIWithMessage() {
-		runOnUiThread(new Runnable() {
-			public void run() {
-				// 刷新bottom bar消息未读数
-				updateUnreadLabel();
-				if (currentTabIndex == 0) {
-					// 当前页面如果为聊天历史页面，刷新此页面
-					if (conversationListFragment != null) {
-						conversationListFragment.refresh();
-					}
-				}
-			}
-		});
-	}
-	
 	@Override
 	public void back(View view) {
 		super.back(view);
@@ -275,21 +169,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
             
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateUnreadLabel();
-                updateUnreadAddressLable();
-                if (currentTabIndex == 0) {
-                    // 当前页面如果为聊天历史页面，刷新此页面
-                    if (conversationListFragment != null) {
-                        conversationListFragment.refresh();
-                    }
-                } else if (currentTabIndex == 1) {
-                    if(contactListFragment != null) {
-                        contactListFragment.refresh();
-                    }
-                }
                 String action = intent.getAction();
                 if(action.equals(Constant.ACTION_GROUP_CHANAGED)){
-                    if (EaseCommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
+                    if (EaseCommonUtils.getTopActivity(ConversationListActivity.this).equals(GroupsActivity.class.getName())) {
                         GroupsActivity.instance.onResume();
                     }
                 }
@@ -318,108 +200,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         }
 	}
 
-	/**
-	 * 刷新未读消息数
-	 */
-	public void updateUnreadLabel() {
-		int count = getUnreadMsgCountTotal();
-		if (count > 0) {
-			unreadLabel.setText(String.valueOf(count));
-			unreadLabel.setVisibility(View.VISIBLE);
-		} else {
-			unreadLabel.setVisibility(View.INVISIBLE);
-		}
-	}
-
-	/**
-	 * 刷新申请与通知消息数
-	 */
-	public void updateUnreadAddressLable() {
-		runOnUiThread(new Runnable() {
-			public void run() {
-				int count = getUnreadAddressCountTotal();
-				if (count > 0) {
-//					unreadAddressLable.setText(String.valueOf(count));
-					unreadAddressLable.setVisibility(View.VISIBLE);
-				} else {
-					unreadAddressLable.setVisibility(View.INVISIBLE);
-				}
-			}
-		});
-
-	}
-
-	/**
-	 * 获取未读申请与通知消息
-	 * 
-	 * @return
-	 */
-	public int getUnreadAddressCountTotal() {
-		int unreadAddressCountTotal = 0;
-		unreadAddressCountTotal = inviteMessgeDao.getUnreadMessagesCount();
-		return unreadAddressCountTotal;
-	}
-
-	/**
-	 * 获取未读消息数
-	 * 
-	 * @return
-	 */
-	public int getUnreadMsgCountTotal() {
-		int unreadMsgCountTotal = 0;
-		int chatroomUnreadMsgCount = 0;
-		unreadMsgCountTotal = EMChatManager.getInstance().getUnreadMsgsCount();
-		for(EMConversation conversation: EMChatManager.getInstance().getAllConversations().values()){
-			if(conversation.getType() == EMConversationType.ChatRoom)
-			chatroomUnreadMsgCount=chatroomUnreadMsgCount+conversation.getUnreadMsgCount();
-		}
-		return unreadMsgCountTotal-chatroomUnreadMsgCount;
-	}
-
-	private InviteMessgeDao inviteMessgeDao;
-	private UserDao userDao;
-
-
-
-
-	/**
-	 * 保存提示新消息
-	 * 
-	 * @param msg
-	 */
-	private void notifyNewIviteMessage(InviteMessage msg) {
-		saveInviteMsg(msg);
-		// 提示有新消息
-		HXHelper.getInstance().getNotifier().viberateAndPlayTone(null);
-
-		// 刷新bottom bar消息未读数
-		updateUnreadAddressLable();
-		// 刷新好友页面ui
-		if (currentTabIndex == 1)
-			contactListFragment.refresh();
-	}
-
-	/**
-	 * 保存邀请等msg
-	 * 
-	 * @param msg
-	 */
-	private void saveInviteMsg(InviteMessage msg) {
-		// 保存msg
-		inviteMessgeDao.saveMessage(msg);
-		//保存未读数，这里没有精确计算
-		inviteMessgeDao.saveUnreadMessageCount(1);
-	}
-
-
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		if (!isConflict && !isCurrentAccountRemoved) {
-			updateUnreadLabel();
-			updateUnreadAddressLable();
-		}
 
 		// unregister this event listener when this activity enters the
 		// background
@@ -461,10 +244,10 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			moveTaskToBack(false);
-			return true;
-		}
+//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+//			moveTaskToBack(false);
+//			return true;
+//		}
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -484,21 +267,23 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		isConflictDialogShow = true;
 		HXHelper.getInstance().logout(false,null);
 		String st = getResources().getString(R.string.Logoff_notification);
-		if (!MainActivity.this.isFinishing()) {
+		if (!ConversationListActivity.this.isFinishing()) {
 			// clear up global variables
 			try {
 				if (conflictBuilder == null)
-					conflictBuilder = new android.app.AlertDialog.Builder(MainActivity.this);
+					conflictBuilder = new android.app.AlertDialog.Builder(ConversationListActivity.this);
 				conflictBuilder.setTitle(st);
 				conflictBuilder.setMessage(R.string.connect_conflict);
 				conflictBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						conflictBuilder = null;
+						//TODO
 						finish();
-						startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//						dialog.dismiss();
+//						conflictBuilder = null;
+//						finish();
+//						startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
 					}
 				});
 				conflictBuilder.setCancelable(false);
@@ -519,21 +304,22 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		isAccountRemovedDialogShow = true;
 		HXHelper.getInstance().logout(false,null);
 		String st5 = getResources().getString(R.string.Remove_the_notification);
-		if (!MainActivity.this.isFinishing()) {
+		if (!ConversationListActivity.this.isFinishing()) {
 			// clear up global variables
 			try {
 				if (accountRemovedBuilder == null)
-					accountRemovedBuilder = new android.app.AlertDialog.Builder(MainActivity.this);
+					accountRemovedBuilder = new android.app.AlertDialog.Builder(ConversationListActivity.this);
 				accountRemovedBuilder.setTitle(st5);
 				accountRemovedBuilder.setMessage(R.string.em_user_remove);
 				accountRemovedBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						accountRemovedBuilder = null;
 						finish();
-						startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//						dialog.dismiss();
+//						accountRemovedBuilder = null;
+//						finish();
+//						startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
 					}
 				});
 				accountRemovedBuilder.setCancelable(false);
@@ -573,7 +359,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                             public void run() {
                                 // 重新显示登陆页面
                                 finish();
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
                                 
                             }
                         });

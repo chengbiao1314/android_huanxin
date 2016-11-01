@@ -2,9 +2,9 @@ package com.cb.hxim_library.parse;
 
 import android.content.Context;
 
+import com.cb.hxim_library.HXHelper;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChatManager;
-import com.cb.hxim_library.DemoHelper;
 import com.cb.hxim_library.easeui.domain.EaseUser;
 import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
 import com.easemob.util.EMLog;
@@ -150,7 +150,7 @@ public class ParseManager {
 					String nick = pUser.getString(CONFIG_NICK);
 					ParseFile pFile = pUser.getParseFile(CONFIG_AVATAR);
 					if(callback!=null ){
-					    if(DemoHelper.getInstance().getContactList() == null){
+					    if(HXHelper.getInstance().getContactList() == null){
 					        callback.onError(-1, "contactlist is null");
 					        return;
 					    }
@@ -158,7 +158,7 @@ public class ParseManager {
 					        callback.onError(-1, "username is null");
 					        return;
 					    }
-					    EaseUser user = DemoHelper.getInstance().getContactList().get(username);
+					    EaseUser user = HXHelper.getInstance().getContactList().get(username);
 						if(user!=null){
 							user.setNick(nick);
 							if (pFile != null && pFile.getUrl() != null) {

@@ -33,9 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cb.hxim_library.HXHelper;
 import com.easemob.chat.EMCallStateChangeListener;
 import com.easemob.chat.EMChatManager;
-import com.cb.hxim_library.DemoHelper;
 import com.cb.hxim_library.R;
 import com.easemob.exceptions.EMServiceNotReadyException;
 
@@ -77,7 +77,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
         }
 		setContentView(R.layout.em_activity_voice_call);
 		
-		DemoHelper.getInstance().isVoiceCalling = true;
+		HXHelper.getInstance().isVoiceCalling = true;
 
 		comingBtnContainer = (LinearLayout) findViewById(R.id.ll_coming_call);
 		refuseBtn = (Button) findViewById(R.id.btn_refuse_call);
@@ -486,7 +486,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		DemoHelper.getInstance().isVoiceCalling = false;
+		HXHelper.getInstance().isVoiceCalling = false;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContactManager;
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.widget.EaseAlertDialog;
 
@@ -95,7 +95,7 @@ public class AddContactActivity extends BaseActivity{
 			return;
 		}
 		
-		if(DemoHelper.getInstance().getContactList().containsKey(nameText.getText().toString())){
+		if(HXHelper.getInstance().getContactList().containsKey(nameText.getText().toString())){
 		    //提示已在好友列表中(在黑名单列表里)，无需添加
 		    if(EMContactManager.getInstance().getBlackListUsernames().contains(nameText.getText().toString())){
 		        new EaseAlertDialog(this, R.string.user_already_in_contactlist).show();

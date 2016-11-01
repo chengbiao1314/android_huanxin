@@ -30,7 +30,7 @@ import android.widget.TextView;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.DemoHelper;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.adapter.EaseContactAdapter;
 import com.cb.hxim_library.easeui.domain.EaseUser;
@@ -69,7 +69,7 @@ public class GroupPickContactsActivity extends BaseActivity {
 			exitingMembers = new ArrayList<String>();
 		// 获取好友列表
 		final List<EaseUser> alluserList = new ArrayList<EaseUser>();
-		for (EaseUser user : DemoHelper.getInstance().getContactList().values()) {
+		for (EaseUser user : HXHelper.getInstance().getContactList().values()) {
 			if (!user.getUsername().equals(Constant.NEW_FRIENDS_USERNAME) & !user.getUsername().equals(Constant.GROUP_USERNAME) & !user.getUsername().equals(Constant.CHAT_ROOM) & !user.getUsername().equals(Constant.CHAT_ROBOT))
 				alluserList.add(user);
 		}

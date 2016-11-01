@@ -6,7 +6,7 @@ import android.util.Log;
 import com.easemob.EMValueCallBack;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
-import com.cb.hxim_library.DemoHelper.DataSyncListener;
+import com.cb.hxim_library.HXHelper.DataSyncListener;
 import com.cb.hxim_library.utils.PreferenceManager;
 import com.cb.hxim_library.easeui.domain.EaseUser;
 

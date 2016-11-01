@@ -15,7 +15,6 @@ package com.cb.hxim_library.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -27,10 +26,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
-import com.cb.hxim_library.easeui.widget.EaseAlertDialog;
+import com.cb.hxim_library.HXHelper;
 import com.easemob.chat.EMContactManager;
-import com.cb.hxim_library.DemoHelper;
-import com.cb.hxim_library.DemoHelper.DataSyncListener;
+import com.cb.hxim_library.HXHelper.DataSyncListener;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.db.InviteMessgeDao;
 import com.cb.hxim_library.db.UserDao;
@@ -98,7 +96,7 @@ public class ContactListFragment extends EaseContactListFragment {
         });
         
         //设置联系人数据
-        setContactsMap(DemoHelper.getInstance().getContactList());
+        setContactsMap(HXHelper.getInstance().getContactList());
         super.setUpView();
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -122,15 +120,15 @@ public class ContactListFragment extends EaseContactListFragment {
         
         
         contactSyncListener = new ContactSyncListener();
-        DemoHelper.getInstance().addSyncContactListener(contactSyncListener);
+        HXHelper.getInstance().addSyncContactListener(contactSyncListener);
         
         blackListSyncListener = new BlackListSyncListener();
-        DemoHelper.getInstance().addSyncBlackListListener(blackListSyncListener);
+        HXHelper.getInstance().addSyncBlackListListener(blackListSyncListener);
         
         contactInfoSyncListener = new ContactInfoSyncListener();
-        DemoHelper.getInstance().getUserProfileManager().addSyncContactInfoListener(contactInfoSyncListener);
+        HXHelper.getInstance().getUserProfileManager().addSyncContactInfoListener(contactInfoSyncListener);
         
-        if (!DemoHelper.getInstance().isContactsSyncedWithServer()) {
+        if (!HXHelper.getInstance().isContactsSyncedWithServer()) {
             loadingView.setVisibility(View.VISIBLE);
         } else {
             loadingView.setVisibility(View.GONE);
@@ -141,16 +139,16 @@ public class ContactListFragment extends EaseContactListFragment {
     public void onDestroy() {
         super.onDestroy();
         if (contactSyncListener != null) {
-            DemoHelper.getInstance().removeSyncContactListener(contactSyncListener);
+            HXHelper.getInstance().removeSyncContactListener(contactSyncListener);
             contactSyncListener = null;
         }
         
         if(blackListSyncListener != null){
-            DemoHelper.getInstance().removeSyncBlackListListener(blackListSyncListener);
+            HXHelper.getInstance().removeSyncBlackListListener(blackListSyncListener);
         }
         
         if(contactInfoSyncListener != null){
-            DemoHelper.getInstance().getUserProfileManager().removeSyncContactInfoListener(contactInfoSyncListener);
+            HXHelper.getInstance().getUserProfileManager().removeSyncContactInfoListener(contactInfoSyncListener);
         }
     }
     
@@ -248,7 +246,7 @@ public class ContactListFragment extends EaseContactListFragment {
 					// 删除db和内存中此用户的数据
 					UserDao dao = new UserDao(getActivity());
 					dao.deleteContact(tobeDeleteUser.getUsername());
-					DemoHelper.getInstance().getContactList().remove(tobeDeleteUser.getUsername());
+					HXHelper.getInstance().getContactList().remove(tobeDeleteUser.getUsername());
 					getActivity().runOnUiThread(new Runnable() {
 						public void run() {
 							pd.dismiss();

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.cb.hxim_library.Constant;
-import com.cb.hxim_library.DemoApplication;
+import com.cb.hxim_library.HXOperation;
 import com.cb.hxim_library.domain.InviteMessage;
 import com.cb.hxim_library.domain.InviteMessage.InviteMesageStatus;
 import com.cb.hxim_library.domain.RobotUser;
@@ -23,7 +23,7 @@ public class DemoDBManager {
     private DbOpenHelper dbHelper;
     
     private DemoDBManager(){
-        dbHelper = DbOpenHelper.getInstance(DemoApplication.getInstance().getApplicationContext());
+        dbHelper = DbOpenHelper.getInstance(HXOperation.applicationContext.getApplicationContext());
     }
     
     public static synchronized DemoDBManager getInstance(){

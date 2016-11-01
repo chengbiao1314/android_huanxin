@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DemoModel {
+public class HXModel {
     UserDao dao = null;
     protected Context context = null;
     protected Map<Key,Object> valueCache = new HashMap<Key,Object>();
     
-    public DemoModel(Context ctx){
+    public HXModel(Context ctx){
         context = ctx;
         PreferenceManager.init(context);
     }
