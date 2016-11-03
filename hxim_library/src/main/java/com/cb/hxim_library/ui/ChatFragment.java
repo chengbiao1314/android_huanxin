@@ -83,20 +83,25 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
         ((EaseEmojiconMenu)inputMenu.getEmojiconMenu()).addEmojiconGroup(EmojiconExampleGroupData.getData());
         
     }
-    
+
+    /**
+     * 扩展功能添加
+     *  TODO
+     */
     @Override
     protected void registerExtendMenuItem() {
         //demo这里不覆盖基类已经注册的item,item点击listener沿用基类的
         super.registerExtendMenuItem();
+
         //增加扩展item
-        inputMenu.registerExtendMenuItem(R.string.attach_video, R.drawable.em_chat_video_selector, ITEM_VIDEO, extendMenuItemClickListener);
-        inputMenu.registerExtendMenuItem(R.string.attach_file, R.drawable.em_chat_file_selector, ITEM_FILE, extendMenuItemClickListener);
-        if(chatType == Constant.CHATTYPE_SINGLE){
-            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.drawable.em_chat_voice_call_selector, ITEM_VOICE_CALL, extendMenuItemClickListener);
-            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.drawable.em_chat_video_call_selector, ITEM_VIDEO_CALL, extendMenuItemClickListener);
-            // 阅后即焚开关菜单
-            inputMenu.registerExtendMenuItem(R.string.attach_read_fire, R.drawable.ease_read_fire, ITEM_READFIRE, extendMenuItemClickListener);
-        }
+//        inputMenu.registerExtendMenuItem(R.string.attach_video, R.drawable.em_chat_video_selector, ITEM_VIDEO, extendMenuItemClickListener);
+//        inputMenu.registerExtendMenuItem(R.string.attach_file, R.drawable.em_chat_file_selector, ITEM_FILE, extendMenuItemClickListener);
+//        if(chatType == Constant.CHATTYPE_SINGLE){
+//            inputMenu.registerExtendMenuItem(R.string.attach_voice_call, R.drawable.em_chat_voice_call_selector, ITEM_VOICE_CALL, extendMenuItemClickListener);
+//            inputMenu.registerExtendMenuItem(R.string.attach_video_call, R.drawable.em_chat_video_call_selector, ITEM_VIDEO_CALL, extendMenuItemClickListener);
+//            // 阅后即焚开关菜单
+//            inputMenu.registerExtendMenuItem(R.string.attach_read_fire, R.drawable.ease_read_fire, ITEM_READFIRE, extendMenuItemClickListener);
+//        }
         
     }
     
@@ -263,6 +268,13 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
                 REQUEST_CODE_CONTEXT_MENU);
     }
 
+    /**
+     *  TODO
+     *  扩展项的点击事件
+     * @param itemId
+     * @param view
+     * @return
+     */
     @Override
     public boolean onExtendMenuItemClick(int itemId, View view) {
         switch (itemId) {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IM研究</string>
     <string name="attach_read_fire">阅后即焚</string>
     <string name="revoke">撤回</string>
     <string name="revokeing">正在撤回 请稍候……</string>

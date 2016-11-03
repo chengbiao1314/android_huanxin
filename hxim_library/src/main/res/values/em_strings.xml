@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HuanXin UI Demo</string>
     <string name="attach_read_fire">Burn After Reading</string>
     <string name="revoking">Revoking</string>
     <string name="revoke">Revoke</string>

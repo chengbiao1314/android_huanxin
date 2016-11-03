@@ -75,6 +75,12 @@
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize" >
         </activity>
+        <!-- 显示下载大图页面 -->
+        <activity
+            android:name="com.cb.hxim_library.easeui.ui.EaseShowBigImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" >
+        </activity>
 
 
 
@@ -123,13 +129,13 @@
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <!-- 聊天页面 -->
-        <activity
+      <!--  <activity
             android:name="com.easemob.applib.ui.ChatActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize" >
-        </activity>
+        </activity>-->
         <!-- 添加好友 -->
         <activity
             android:name="com.cb.hxim_library.ui.AddContactActivity"
@@ -186,7 +192,7 @@
         </activity>
         <!-- 地图 -->
         <activity
-            android:name="com.easemob.easeui.ui.EaseBaiduMapActivity"
+            android:name="com.cb.hxim_library.easeui.ui.EaseBaiduMapActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" >
         </activity>
@@ -210,15 +216,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/MyDialogStyle" >
         </activity>
-        <!-- 显示下载大图页面 -->
-        <activity
-            android:name="com.easemob.easeui.ui.EaseShowBigImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide" >
-        </activity>
         <!-- 下载文件 -->
         <activity
-            android:name="com.easemob.easeui.ui.EaseShowNormalFileActivity"
+            android:name="com.cb.hxim_library.easeui.ui.EaseShowNormalFileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" >
         </activity>
@@ -283,7 +283,7 @@
             android:windowSoftInputMode="stateVisible" >
         </activity>
         <activity
-            android:name="com.easemob.easeui.ui.EaseShowVideoActivity"
+            android:name="com.cb.hxim_library.easeui.ui.EaseShowVideoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="stateAlwaysHidden" >
@@ -366,14 +366,14 @@
         <!-- gcm end -->
 
 
-        <service
+       <!-- <service
             android:name="com.umeng.update.net.DownloadingService"
             android:process=":DownloadingService" >
         </service>
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
+        </activity>-->
 
         <!-- 设置环信应用的appkey easemob-demo#chatdemoui-->
         <meta-data
