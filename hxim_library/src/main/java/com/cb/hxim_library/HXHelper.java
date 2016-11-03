@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cb.hxim_library.ui.activity.ConversationListActivity;
 import com.easemob.EMCallBack;
 import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
@@ -39,7 +40,7 @@ import com.cb.hxim_library.domain.RobotUser;
 import com.cb.hxim_library.parse.UserProfileManager;
 import com.cb.hxim_library.receiver.CallReceiver;
 import com.cb.hxim_library.ui.ChatActivity;
-import com.cb.hxim_library.ui.MainActivity;
+//import com.cb.hxim_library.ui.MainActivity;
 import com.cb.hxim_library.ui.VideoCallActivity;
 import com.cb.hxim_library.ui.VoiceCallActivity;
 import com.cb.hxim_library.utils.PreferenceManager;
@@ -617,7 +618,8 @@ public class HXHelper {
      * 账号在别的设备登录
      */
     protected void onConnectionConflict(){
-        Intent intent = new Intent(appContext, MainActivity.class);
+//        Intent intent = new Intent(appContext, MainActivity.class);
+        Intent intent = new Intent(appContext, ConversationListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.ACCOUNT_CONFLICT, true);
         appContext.startActivity(intent);
@@ -627,7 +629,8 @@ public class HXHelper {
      * 账号被移除
      */
     protected void onCurrentAccountRemoved(){
-        Intent intent = new Intent(appContext, MainActivity.class);
+//        Intent intent = new Intent(appContext, MainActivity.class);
+        Intent intent = new Intent(appContext, ConversationListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.ACCOUNT_REMOVED, true);
         appContext.startActivity(intent);

@@ -24,6 +24,9 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.cb.hxim_library.Constant;
 import com.cb.hxim_library.HXHelper;
@@ -31,9 +34,9 @@ import com.cb.hxim_library.R;
 import com.cb.hxim_library.easeui.EaseConstant;
 import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
 import com.cb.hxim_library.ui.BaseActivity;
-import com.cb.hxim_library.ui.ConversationListFragment;
 import com.cb.hxim_library.ui.GroupsActivity;
 import com.cb.hxim_library.ui.LoginActivity;
+import com.cb.hxim_library.ui.fragment.ConversationListFragment;
 import com.easemob.EMCallBack;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
@@ -72,13 +75,17 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
 			// 三个fragment里加的判断同理
 		    HXHelper.getInstance().logout(false,null);
 			finish();
-			startActivity(new Intent(this, LoginActivity.class));
+			//TODO
+//			startActivity(new Intent(this, LoginActivity.class));
+			Toast.makeText(ConversationListActivity.this,"登录信息失效，请重新登录",Toast.LENGTH_SHORT).show();
 			return;
 		} else if (savedInstanceState != null && savedInstanceState.getBoolean("isConflict", false)) {
 			// 防止被T后，没点确定按钮然后按了home键，长期在后台又进app导致的crash
 			// 三个fragment里加的判断同理
 			finish();
-			startActivity(new Intent(this, LoginActivity.class));
+			//TODO
+			Toast.makeText(ConversationListActivity.this,"登录信息失效，请重新登录",Toast.LENGTH_SHORT).show();
+//			startActivity(new Intent(this, LoginActivity.class));
 			return;
 		}
 		setContentView(R.layout.cb_activity_conversationlist);
@@ -113,12 +120,15 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
 			// 提示新消息
 			HXHelper.getInstance().getNotifier().onNewMsg(message);
 
+			refreshUIWithMessage();
 			break;
 		case EventOfflineMessage: {
+			refreshUIWithMessage();
 			break;
 		}
 
 		case EventConversationListChanged: {
+			refreshUIWithMessage();
 		    break;
 		}
 		case EventNewCMDMessage:
@@ -129,6 +139,7 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
             if(action.equals(EaseConstant.EASE_ATTR_REVOKE)){
                 EaseCommonUtils.receiveRevokeMessage(this, cmdMessage);
             }
+			refreshUIWithMessage();
 			break;
 		case EventReadAck:
             // TODO 这里当此消息未加载到内存中时，ackMessage会为null，消息的删除会失败
@@ -149,10 +160,25 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
                 }
                 conversation.removeMessage(ackMessage.getMsgId());
             }
+			refreshUIWithMessage();
 		    break;
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * 监听刷新会话列表
+	 */
+	private void refreshUIWithMessage() {
+		runOnUiThread(new Runnable() {
+			public void run() {
+					// 当前页面如果为聊天历史页面，刷新此页面
+					if (conversationListFragment != null) {
+						conversationListFragment.refresh();
+					}
+			}
+		});
 	}
 
 	@Override
@@ -169,7 +195,12 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
             
             @Override
             public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
+				// 当前页面如果为聊天历史页面，刷新此页面
+				if (conversationListFragment != null) {
+					conversationListFragment.refresh();
+				}
+
+				String action = intent.getAction();
                 if(action.equals(Constant.ACTION_GROUP_CHANAGED)){
                     if (EaseCommonUtils.getTopActivity(ConversationListActivity.this).equals(GroupsActivity.class.getName())) {
                         GroupsActivity.instance.onResume();
@@ -244,10 +275,11 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			finish();
 //			moveTaskToBack(false);
 //			return true;
-//		}
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -280,6 +312,7 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
 					public void onClick(DialogInterface dialog, int which) {
 						//TODO
 						finish();
+						Toast.makeText(ConversationListActivity.this,"登录信息失效，请重新登录",Toast.LENGTH_SHORT).show();
 //						dialog.dismiss();
 //						conflictBuilder = null;
 //						finish();
@@ -359,7 +392,8 @@ public class ConversationListActivity extends BaseActivity implements EMEventLis
                             public void run() {
                                 // 重新显示登陆页面
                                 finish();
-                                startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
+								Toast.makeText(ConversationListActivity.this,"登录信息失效，请重新登录",Toast.LENGTH_SHORT).show();
+//                                startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
                                 
                             }
                         });

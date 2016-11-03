@@ -183,7 +183,6 @@ public class EaseConversationListFragment extends EaseBaseFragment {
 	/**
 	 * 获取会话列表
 	 * 
-	 * @param context
 	 * @return +
 	 */
 	protected List<EMConversation> loadConversationList() {
@@ -221,9 +220,8 @@ public class EaseConversationListFragment extends EaseBaseFragment {
 
 	/**
 	 * 根据最后一条消息的时间排序
-	 * 
-	 * @param usernames
-	 */
+	 * @param conversationList
+     */
 	private void sortConversationByLastChatTime(List<Pair<Long, EMConversation>> conversationList) {
 		Collections.sort(conversationList, new Comparator<Pair<Long, EMConversation>>() {
 			@Override
