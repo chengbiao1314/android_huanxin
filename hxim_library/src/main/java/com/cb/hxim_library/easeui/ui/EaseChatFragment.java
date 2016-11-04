@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -59,6 +60,7 @@ import com.easemob.util.PathUtil;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 可以直接new出来使用的聊天对话页面fragment，
@@ -436,7 +438,12 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
                 if (data != null) {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
-                        sendPicByUri(selectedImage);
+                        try{
+                            sendPicByUri(selectedImage);
+                        }catch(Exception e){
+                            Toast.makeText(getActivity(),"无效图片", Toast.LENGTH_SHORT).show();
+                            Log.e("发送图片异常：",e.toString());
+                        }
                     }
                 }
             } else if (requestCode == REQUEST_CODE_MAP) { // 地图
@@ -775,6 +782,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
                 toast.show();
                 return;
             }
+            Log.e("picturePath 1------->",picturePath);
             sendImageMessage(picturePath);
         } else {
             File file = new File(selectedImage.getPath());
@@ -785,6 +793,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
                 return;
 
             }
+            Log.e("picturePath 2------->",file.getAbsolutePath());
             sendImageMessage(file.getAbsolutePath());
         }
 

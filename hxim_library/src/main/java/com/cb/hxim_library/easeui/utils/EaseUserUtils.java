@@ -43,7 +43,7 @@ public class EaseUserUtils {
                 Glide.with(context).load(avatarResId).into(imageView);
             } catch (Exception e) {
                 //正常的string路径
-                Glide.with(context).load("http://192.168.2.103:8080/asd.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
+                Glide.with(context).load("http://192.168.2.124:8080/test.png").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
 //                Glide.with(context).load(user.getAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
             }
         }else{
