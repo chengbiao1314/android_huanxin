@@ -3,7 +3,9 @@ package com.cb.hxim_library.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.cb.hxim_library.Constant;
 import com.cb.hxim_library.R;
+import com.cb.hxim_library.domain.HXUser;
 import com.cb.hxim_library.easeui.ui.EaseChatFragment;
 import com.cb.hxim_library.ui.BaseActivity;
 import com.cb.hxim_library.ui.ChatFragment;
@@ -15,7 +17,8 @@ import com.cb.hxim_library.ui.ChatFragment;
 public class ChatActivity extends BaseActivity{
     public static ChatActivity activityInstance;
     private EaseChatFragment chatFragment;
-    String toChatUsername;
+//    private String toChatUsername;
+    private HXUser user;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -23,7 +26,8 @@ public class ChatActivity extends BaseActivity{
         setContentView(R.layout.em_activity_chat);
         activityInstance = this;
         //聊天人或群id
-        toChatUsername = getIntent().getExtras().getString("userId");
+//        toChatUsername = getIntent().getExtras().getString("userId");
+        user = (HXUser) getIntent().getExtras().getSerializable(Constant.EXTRA_USER);
         //可以直接new EaseChatFratFragment使用
         chatFragment = new ChatFragment();
         //传入参数
@@ -42,7 +46,11 @@ public class ChatActivity extends BaseActivity{
     protected void onNewIntent(Intent intent) {
         // 点击notification bar进入聊天页面，保证只有一个聊天页面
         String username = intent.getStringExtra("userId");
-        if (toChatUsername.equals(username))
+
+        if(user == null || user.getTargetUserId() == null)
+            return;
+
+        if (user.getTargetUserId().equals(username))
             super.onNewIntent(intent);
         else {
             finish();
@@ -56,6 +64,9 @@ public class ChatActivity extends BaseActivity{
     }
     
     public String getToChatUsername(){
-        return toChatUsername;
+        if(user == null || user.getTargetUserId() == null)
+            return "";
+
+        return user.getTargetUserId();
     }
 }

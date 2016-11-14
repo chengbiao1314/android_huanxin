@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,7 +28,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.cb.hxim_library.Constant;
 import com.cb.hxim_library.R;
+import com.cb.hxim_library.domain.HXUser;
+import com.cb.hxim_library.domain.PageEnum;
 import com.cb.hxim_library.easeui.EaseConstant;
 import com.cb.hxim_library.easeui.controller.EaseUI;
 import com.cb.hxim_library.easeui.domain.EaseEmojicon;
@@ -58,6 +62,9 @@ import com.easemob.chat.TextMessageBody;
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
@@ -86,6 +93,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
     protected Bundle fragmentArgs;
     protected int chatType;
     protected String toChatUsername;
+
+    protected HXUser user;
     protected EaseChatMessageList messageList;
     protected EaseChatInputMenu inputMenu;
 
@@ -131,10 +140,26 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
     public void onActivityCreated(Bundle savedInstanceState) {
 
         fragmentArgs = getArguments();
-        // 判断单聊还是群聊
-        chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
-        // 会话人或群组id
-        toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
+//        // 判断单聊还是群聊
+//        chatType = fragmentArgs.getInt(EaseConstant.EXTRA_CHAT_TYPE, EaseConstant.CHATTYPE_SINGLE);
+//        // 会话人或群组id
+//        toChatUsername = fragmentArgs.getString(EaseConstant.EXTRA_USER_ID);
+        user = (HXUser) fragmentArgs.getSerializable(Constant.EXTRA_USER);
+        if(user != null){
+            toChatUsername = user.getTargetUserId();
+            if(user.getTargetType() == PageEnum.ChatPage || user.getTargetType() == PageEnum.CSPage){
+                chatType = EaseConstant.CHATTYPE_SINGLE;
+            }else if(user.getTargetType() == PageEnum.GroupPage){
+                chatType = EaseConstant.CHATTYPE_GROUP;
+            }else if(user.getTargetType() == PageEnum.RoomPage){
+                chatType = EaseConstant.CHATTYPE_CHATROOM;
+            }else{
+                chatType = EaseConstant.CHATTYPE_SINGLE;
+            }
+        }
+
+        Log.e("hx","user is ..." + user.getTargetType());
+        Log.e("hx","user is ..." + user.getTargetUserId());
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -150,6 +175,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
         messageList = (EaseChatMessageList) getView().findViewById(R.id.message_list);
         if(chatType != EaseConstant.CHATTYPE_SINGLE)
             messageList.setShowUserNick(true);
+
         listView = messageList.getListView();
 
         extendMenuItemClickListener = new MyItemClickListener();
@@ -197,7 +223,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
      * 设置属性，监听等
      */
     protected void setUpView() {
-        titleBar.setTitle(toChatUsername);
+       /* titleBar.setTitle(toChatUsername);
         if (chatType == EaseConstant.CHATTYPE_SINGLE) { // 单聊
             // 设置标题
             if(EaseUserUtils.getUserInfo(toChatUsername) != null){
@@ -222,7 +248,40 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
         if (chatType != EaseConstant.CHATTYPE_CHATROOM) {
             onConversationInit();
             onMessageListInit();
+        }*/
+        //TODO updata
+        titleBar.setTitle(user.getTargetUserId());
+        if (user.getTargetType() == PageEnum.ChatPage) { // 单聊
+            // 设置标题
+            if(EaseUserUtils.getUserInfo(user.getTargetUserId()) != null){
+                titleBar.setTitle(EaseUserUtils.getUserInfo(user.getTargetUserId()).getNick());
+            }
+            titleBar.setRightImageResource(R.drawable.ease_mm_title_remove);
+        } else if(user.getTargetType() == PageEnum.CSPage){//客服
+            // 设置标题
+            titleBar.setTitle("客服");
+            titleBar.setRightImageResource(R.drawable.ease_mm_title_remove);
+        }else {
+        	titleBar.setRightImageResource(R.drawable.ease_to_group_details_normal);
+            if (user.getTargetType() == PageEnum.GroupPage) {
+                // 群聊
+                EMGroup group = EMGroupManager.getInstance().getGroup(user.getTargetUserId());
+                if (group != null)
+                    titleBar.setTitle(group.getGroupName());
+                // 监听当前会话的群聊解散被T事件
+                groupListener = new GroupListener();
+                EMGroupManager.getInstance().addGroupChangeListener(groupListener);
+            } else {
+                onChatRoomViewCreation();
+            }
+
         }
+        if (user.getTargetType() != PageEnum.RoomPage) {
+            onConversationInit();
+            onMessageListInit();
+        }
+
+
 
         // 设置标题栏点击事件
         titleBar.setLeftLayoutClickListener(new OnClickListener() {
@@ -1041,5 +1100,5 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
          */
         EaseCustomChatRowProvider onSetCustomChatRowProvider();
     }
-    
+
 }

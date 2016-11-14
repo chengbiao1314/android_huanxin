@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
                 user.setUserId(et_id.getText().toString().trim());
                 user.setPassword(et_psw.getText().toString().trim());
                 user.setTargetUserId(et_targetID.getText().toString().trim());
+                user.setTargetType(indexPage);
 
                 HXOperation.getInstance().startChat(MainActivity.this,user,indexPage);
             }

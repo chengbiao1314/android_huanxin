@@ -164,8 +164,10 @@ public class HXOperation {
                 context.startActivity(intent0);
                 break;
             case ChatPage:// 进入聊天页面
+            case CSPage:// 进入客服页面
                 Intent intent1 = new Intent(context, ChatActivity.class);
-                intent1.putExtra(Constant.EXTRA_USER_ID, user.getTargetUserId());
+//                intent1.putExtra(Constant.EXTRA_USER_ID, user.getTargetUserId());
+                intent1.putExtra(Constant.EXTRA_USER,user);
                 context.startActivity(intent1);
                 break;
             default:

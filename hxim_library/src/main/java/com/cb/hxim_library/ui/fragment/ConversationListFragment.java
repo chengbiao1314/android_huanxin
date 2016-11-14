@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.cb.hxim_library.Constant;
 import com.cb.hxim_library.R;
 import com.cb.hxim_library.db.InviteMessgeDao;
+import com.cb.hxim_library.domain.HXUser;
+import com.cb.hxim_library.domain.PageEnum;
 import com.cb.hxim_library.easeui.ui.EaseConversationListFragment;
 import com.cb.hxim_library.ui.ChatActivity;
 import com.cb.hxim_library.ui.MainActivity;
@@ -56,8 +58,9 @@ public class ConversationListFragment extends EaseConversationListFragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EMConversation conversation = conversationListView.getItem(position);
-                String username = conversation.getUserName();
-                if (username.equals(EMChatManager.getInstance().getCurrentUser()))
+                HXUser user = new HXUser();
+                user.setTargetUserId(conversation.getUserName());
+                if (user.getTargetUserId().equals(EMChatManager.getInstance().getCurrentUser()))
                     Toast.makeText(getActivity(), R.string.Cant_chat_with_yourself, Toast.LENGTH_SHORT).show();
                 else {
                     // 进入聊天页面
@@ -65,16 +68,39 @@ public class ConversationListFragment extends EaseConversationListFragment{
                     if(conversation.isGroup()){
                         if(conversation.getType() == EMConversationType.ChatRoom){
                             // it's group chat
-                            intent.putExtra(Constant.EXTRA_CHAT_TYPE, Constant.CHATTYPE_CHATROOM);
+                            user.setTargetType(PageEnum.RoomPage);
                         }else{
-                            intent.putExtra(Constant.EXTRA_CHAT_TYPE, Constant.CHATTYPE_GROUP);
+                            user.setTargetType(PageEnum.GroupPage);
                         }
-                        
+
+                    }else{
+                        user.setTargetType(PageEnum.ChatPage);
                     }
                     // it's single chat
-                    intent.putExtra(Constant.EXTRA_USER_ID, username);
+                    intent.putExtra(Constant.EXTRA_USER,user);
                     startActivity(intent);
                 }
+
+
+//                String username = conversation.getUserName();
+//                if (username.equals(EMChatManager.getInstance().getCurrentUser()))
+//                    Toast.makeText(getActivity(), R.string.Cant_chat_with_yourself, Toast.LENGTH_SHORT).show();
+//                else {
+//                    // 进入聊天页面
+//                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+//                    if(conversation.isGroup()){
+//                        if(conversation.getType() == EMConversationType.ChatRoom){
+//                            // it's group chat
+//                            intent.putExtra(Constant.EXTRA_CHAT_TYPE, Constant.CHATTYPE_CHATROOM);
+//                        }else{
+//                            intent.putExtra(Constant.EXTRA_CHAT_TYPE, Constant.CHATTYPE_GROUP);
+//                        }
+//
+//                    }
+//                    // it's single chat
+//                    intent.putExtra(Constant.EXTRA_USER_ID, username);
+//                    startActivity(intent);
+//                }
             }
         });
     }
