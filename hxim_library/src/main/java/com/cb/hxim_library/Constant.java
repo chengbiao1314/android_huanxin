@@ -31,4 +31,6 @@ public class Constant extends EaseConstant{
     // 设置自己扩展的消息类型的 key
     public static final String EM_ATTR_TYPE = "msg_type";
     public static final String EM_ATTR_TYPE_REVOKE = "revoke";
+
+	public static final String WEICHAT_MSG = "weichat";
 }

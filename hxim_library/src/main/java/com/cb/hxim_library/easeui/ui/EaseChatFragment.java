@@ -25,11 +25,14 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cb.hxim_library.Constant;
+import com.cb.hxim_library.HXHelper;
 import com.cb.hxim_library.R;
+import com.cb.hxim_library.chatrow.ChatRowEvaluation;
 import com.cb.hxim_library.domain.HXUser;
 import com.cb.hxim_library.domain.PageEnum;
 import com.cb.hxim_library.easeui.EaseConstant;
@@ -43,6 +46,7 @@ import com.cb.hxim_library.easeui.widget.EaseChatExtendMenu;
 import com.cb.hxim_library.easeui.widget.EaseChatInputMenu;
 import com.cb.hxim_library.easeui.widget.EaseChatMessageList;
 import com.cb.hxim_library.easeui.widget.EaseVoiceRecorderView;
+import com.cb.hxim_library.easeui.widget.chatrow.EaseChatRow;
 import com.cb.hxim_library.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.easemob.EMChatRoomChangeListener;
 import com.easemob.EMEventListener;
@@ -158,8 +162,9 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
             }
         }
 
-        Log.e("hx","user is ..." + user.getTargetType());
-        Log.e("hx","user is ..." + user.getTargetUserId());
+        Log.e("hx","user is targetType..." + user.getTargetType());
+        Log.e("hx","user is targetUserId..." + user.getTargetUserId());
+        Log.e("hx","user is CSGroupID..." + user.getCSGroupID());
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -310,6 +315,67 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
         if (forward_msg_id != null) {
             // 发送要转发的消息
             forwardMessage(forward_msg_id);
+        }
+
+
+        //TODO if target user is kefu ,add message
+        if(user.getTargetType() == PageEnum.CSPage) {
+            setChatFragmentHelper(new EaseChatFragmentHelper() {
+                @Override
+                public void onSetMessageAttributes(EMMessage message) {
+                    // 设置消息扩展属性
+
+                    //设置用户信息（昵称，qq等）
+                    setUserInfoAttribute(message);
+
+                    //设置VisitorInfo 传递的信息将在iframe中显示 : PS :这个方法可能会导致客服端收不到消息
+                    //setVisitorInfoSrc(message);
+
+                    //指向某个技能组，技能组（客服分组）内将自动分配客服 pointToSkillGroup(message, groupName);
+                    String groupID = user.getCSGroupID();
+                    if (groupID != null && groupID.length() > 0) {
+                        pointToSkillGroup(message, groupID);
+                    }
+
+                    //指向某个客服 , 当会话同时指定了客服和技能组时，以指定客服为准，指定技能组失效。
+                    String agentID = user.getCSAgentID();
+                    if (agentID != null && agentID.length() > 0) {
+                        pointToAgentUser(message, agentID);
+                    }
+                }
+
+                @Override
+                public void onEnterToChatDetails() {
+
+                }
+
+                @Override
+                public void onAvatarClick(String username) {
+
+                }
+
+                @Override
+                public boolean onMessageBubbleClick(EMMessage message) {
+                    return false;
+                }
+
+                @Override
+                public void onMessageBubbleLongClick(EMMessage message) {
+
+                }
+
+                @Override
+                public boolean onExtendMenuItemClick(int itemId, View view) {
+                    return false;
+                }
+
+                @Override
+                public EaseCustomChatRowProvider onSetCustomChatRowProvider() {
+                    // 设置自定义listview item提供者
+                    Log.e("hx","onSetCustomChatRowProvider has running...");
+                    return new CustomChatRowProvider();
+                }
+            });
         }
     }
     
@@ -1100,5 +1166,140 @@ public class EaseChatFragment extends EaseBaseFragment implements EMEventListene
          */
         EaseCustomChatRowProvider onSetCustomChatRowProvider();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 设置用户的属性，
+     * 通过消息的扩展，传递客服系统用户的属性信息
+     * @param message
+     */
+    private void setUserInfoAttribute(EMMessage message) {
+        if (TextUtils.isEmpty(user.getNickname())) {
+            user.setNickname(EMChatManager.getInstance().getCurrentUser());
+        }
+        JSONObject weichatJson = getWeichatJSONObject(message);
+        try {
+            JSONObject visitorJson = new JSONObject();
+
+            visitorJson.put("userNickname",  user.getNickname());
+            visitorJson.put("trueName", user.getName());
+            visitorJson.put("qq", user.getQq());
+            visitorJson.put("phone", user.getPhone());
+            visitorJson.put("companyName", user.getCompanyName());
+            visitorJson.put("description", user.getDescription());
+            visitorJson.put("email", user.getEmail());
+
+            weichatJson.put("visitor", visitorJson);
+
+            message.setAttribute("weichat", weichatJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取消息中的扩展 weichat是否存在并返回jsonObject
+     * @param message
+     * @return
+     */
+    private JSONObject getWeichatJSONObject(EMMessage message){
+        JSONObject weichatJson = null;
+        try {
+            String weichatString = message.getStringAttribute("weichat", null);
+            if(weichatString == null){
+                weichatJson = new JSONObject();
+            }else{
+                weichatJson = new JSONObject(weichatString);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return weichatJson;
+    }
+
+    /**
+     * 指向某个具体客服，
+     * @param message 消息
+     * @param agentUsername 客服的登录账号
+     */
+    private void pointToAgentUser(EMMessage message, String agentUsername){
+        try {
+            JSONObject weichatJson = getWeichatJSONObject(message);
+            weichatJson.put("agentUsername", agentUsername);
+            message.setAttribute("weichat", weichatJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 技能组（客服分组）发消息发到某个组
+     * @param message 消息
+     * @param groupName 分组名称
+     */
+    private void pointToSkillGroup(EMMessage message, String groupName){
+        try {
+            Log.v("********groupName:",groupName);
+            JSONObject weichatJson = getWeichatJSONObject(message);
+            weichatJson.put("queueName", groupName);
+            message.setAttribute("weichat", weichatJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置自定义listview item提供者
+     *
+     */
+    // evaluation
+    private static final int MESSAGE_TYPE_SENT_EVAL = 1;
+    private static final int MESSAGE_TYPE_RECV_EVAL = 2;
+    public static final int REQUEST_CODE_EVAL = 26;
+    private final class CustomChatRowProvider implements EaseCustomChatRowProvider {
+        @Override
+        public int getCustomChatRowTypeCount() {
+            //此处返回的数目为getCustomChatRowType 中的布局的个数
+            return 8;
+        }
+
+        @Override
+        public int getCustomChatRowType(EMMessage message) {
+            if (message.getType() == EMMessage.Type.TXT) {
+                if (HXHelper.getInstance().isEvalMessage(message)) {
+                    // 满意度评价
+                    return message.direct == EMMessage.Direct.RECEIVE ? MESSAGE_TYPE_RECV_EVAL : MESSAGE_TYPE_SENT_EVAL;
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public EaseChatRow getCustomChatRow(EMMessage message, int position, BaseAdapter adapter) {
+            Log.e("hx","getCustomChatRow has running...");
+            if (message.getType() == EMMessage.Type.TXT) {
+                if (HXHelper.getInstance().isEvalMessage(message)) {
+                    return new ChatRowEvaluation(getActivity(), message, position, adapter);
+                }
+            }
+            return null;
+        }
+    }
+
+
+
+
+
 
 }

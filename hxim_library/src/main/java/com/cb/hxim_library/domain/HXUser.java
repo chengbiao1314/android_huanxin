@@ -13,6 +13,10 @@ public class HXUser implements Serializable{
     private String targetUserId;//聊天对象的id
     private PageEnum targetType;//聊天对象的类型
 
+    //如果是客服
+    private String CSGroupID;//技能组
+    private String CSAgentID;//具体客服
+
     private String nickname;//昵称
     private String qq;//QQ
     private String phone;//手机
@@ -58,6 +62,22 @@ public class HXUser implements Serializable{
 
     public void setTargetType(PageEnum targetType) {
         this.targetType = targetType;
+    }
+
+    public String getCSGroupID() {
+        return CSGroupID;
+    }
+
+    public void setCSGroupID(String CSGroupID) {
+        this.CSGroupID = CSGroupID;
+    }
+
+    public String getCSAgentID() {
+        return CSAgentID;
+    }
+
+    public void setCSAgentID(String CSAgentID) {
+        this.CSAgentID = CSAgentID;
     }
 
     public String getNickname() {

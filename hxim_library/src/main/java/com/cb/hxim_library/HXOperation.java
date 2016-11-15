@@ -59,14 +59,13 @@ public class HXOperation {
      * 全局都调用这个方法开启IM功能
      * @param context
      * @param user
-     * @param indexpage
      */
-    public void startChat(final Context context , final HXUser user , final PageEnum indexpage){
+    public void startChat(final Context context , final HXUser user){
         //是上一次是同一个id，并且曾经成功登录过，直接跳过登录步骤
         if(HXHelper.getInstance().getCurrentUsernName() != null
                 && HXHelper.getInstance().getCurrentUsernName().equals(user.getUserId())
                 && HXHelper.getInstance().isLoggedIn()){
-            skipPage(context,user,indexpage);
+            skipPage(context,user);
             return;
         }
 
@@ -129,7 +128,7 @@ public class HXOperation {
                     pd.dismiss();
                 }
 
-                skipPage(context,user,indexpage);
+                skipPage(context,user);
             }
 
             @Override
@@ -155,10 +154,9 @@ public class HXOperation {
     /**
      * 跳转页面
      * @param context
-     * @param indexpage
      */
-    private void skipPage(Context context ,HXUser user,PageEnum indexpage){
-        switch (indexpage){
+    private void skipPage(Context context ,HXUser user){
+        switch (user.getTargetType()){
             case ConversationListPage:// 进入会话页面
                 Intent intent0 = new Intent(context, ConversationListActivity.class);
                 context.startActivity(intent0);

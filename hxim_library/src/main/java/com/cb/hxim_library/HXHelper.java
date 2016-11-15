@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -58,6 +59,9 @@ import com.cb.hxim_library.easeui.utils.EaseACKUtil;
 import com.cb.hxim_library.easeui.utils.EaseCommonUtils;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1209,6 +1213,32 @@ public class HXHelper {
 
     public void popActivity(Activity activity) {
         easeUI.popActivity(activity);
+    }
+
+
+    /**
+     * 检测到是否为评价消息
+     * @param message
+     * @return
+     */
+    public boolean isEvalMessage(EMMessage message){
+        Log.e("hx","isEvalMessage has running...");
+        try {
+            JSONObject jsonObj = message.getJSONObjectAttribute(Constant.WEICHAT_MSG);
+            if(jsonObj.has("ctrlType")){
+                try {
+                    String type = jsonObj.getString("ctrlType");
+                    Log.e("hx","message type..." + type);
+                    if(!TextUtils.isEmpty(type)&&(type.equalsIgnoreCase("inviteEnquiry")||type.equalsIgnoreCase("enquiry"))){
+                        return true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (EaseMobException e) {
+        }
+        return false;
     }
 
 }

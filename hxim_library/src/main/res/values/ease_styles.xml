@@ -167,4 +167,11 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/ease_edit_text_bg</item>
     </style>
+
+
+    <style name="myRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/em_ratingbar_drawable</item>
+        <item name="android:minHeight">52dip</item>
+        <item name="android:maxHeight">52dip</item>
+    </style>
 </resources>

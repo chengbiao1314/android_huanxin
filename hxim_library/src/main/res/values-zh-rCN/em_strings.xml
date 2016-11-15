@@ -21,4 +21,12 @@
     <string name="network_unstable">网络不稳定</string>
     <string name="no_call_data">没有通话数据</string>
     <string name="adaptive_video_encode">视频自适应码率编码</string>
+
+    <string name="tip_wating">请稍等...</string>
+    <string name="tip_request_fail">请求失败</string>
+    <string name="title_satifisfaction_eval">满意度评价</string>
+    <string name="nick_service">客服昵称</string>
+    <string name="tip_eval">请对我的服务做出评价</string>
+    <string name="hint_leave_message">留言</string>
+    <string name="tip_btn_sumbit">提交</string>
 </resources>

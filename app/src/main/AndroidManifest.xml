@@ -81,6 +81,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" >
         </activity>
+        <!-- 评价页-->
+        <activity
+            android:name="com.cb.hxim_library.ui.SatisfactionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" >
+        </activity>
 
 
 
